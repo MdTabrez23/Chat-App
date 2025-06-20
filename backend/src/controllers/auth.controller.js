@@ -20,6 +20,7 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
+      //jwt token
     } else {
       res.status(400).json({
         message: "Invalid user data",
