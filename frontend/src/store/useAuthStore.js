@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
+import { LogOut } from "lucide-react";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -32,6 +33,31 @@ export const useAuthStore = create((set) => ({
       console.error("Error in signup: ", error);
     } finally {
       set({ isSigningUp: false });
+    }
+  },
+
+  login: async (data) => {
+    set({ isLoggingIn: true });
+    try {
+      const res = await axiosInstance.post("/auth/login", data);
+      set({ authUser: res.data });
+      toast.success("Login successful!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+      console.error("Error in login: ", error);
+    } finally {
+      set({ isLoggingIn: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      set({ authUser: null });
+      toast.success("Logged out successfully!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Logout failed");
+      console.error("Error in logout: ", error.message);
     }
   },
 }));
