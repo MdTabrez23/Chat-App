@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React, use, useEffect } from "react";
 import "./index.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -10,14 +10,23 @@ import ProfilePage from "./pages/ProfilePage";
 import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
+import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+  const { theme, initializeTheme } = useThemeStore();
+
+  useEffect(() => {
+    checkAuth();
+    initializeTheme();
+  }, []);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
   console.log({ authUser });
+  console.log("theme from store: ", theme);
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -28,7 +37,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div data-theme={theme} className="min-h-screen">
       <Navbar />
       <Routes>
         <Route
@@ -39,6 +48,7 @@ const App = () => {
           path="/signup"
           element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
         />
+
         <Route
           path="/login"
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
