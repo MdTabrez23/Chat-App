@@ -17,9 +17,10 @@ const Sidebar = () => {
   }, [getUsers]);
 
   // Filter users by online status and search term
-  const filteredUsers = (showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(user._id))
-    : users
+  const filteredUsers = (
+    showOnlineOnly
+      ? users.filter((user) => onlineUsers.includes(user._id))
+      : users
   ).filter((user) =>
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
