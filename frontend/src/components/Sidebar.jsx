@@ -10,14 +10,19 @@ const Sidebar = () => {
 
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     getUsers();
   }, [getUsers]);
 
-  const filteredUsers = showOnlineOnly
+  // Filter users by online status and search term
+  const filteredUsers = (showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
-    : users;
+    : users
+  ).filter((user) =>
+    user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -26,9 +31,17 @@ const Sidebar = () => {
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
-          <span className="font-medium hidden lg:block">Contacts</span>
+          {/* Search bar replaces Contacts label */}
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search username..."
+            className="input input-sm input-bordered w-32 lg:w-40"
+            style={{ minWidth: 0 }}
+          />
         </div>
-        {/* TODO: Online filter toggle */}
+
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
